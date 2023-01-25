@@ -1,0 +1,68 @@
+﻿@page "/student/{Id:int}"
+@using APBD11.Models
+<h3>StudentDetails</h3>
+<hr />
+<form>
+    <div class="row">
+        <div class="col">
+            <label>
+                <span>First name: </span>
+                <input @bind = "student.Name" />
+            </label>
+            <label>
+                <span> Last name: </span>
+                <input @bind = "student.Surname" />
+            </label>
+            <label>
+                <span>Birthdate: </span>
+                <input @bind = "student.Birthdate" />
+            </label>
+            <label>
+                <span>Studies: </span>
+                <input @bind = "student.Studies" />
+            </label>
+        </div>
+        <div class= "col">
+            <label>
+                <span>Avatar: </span>
+                <input @bind = "student.AvatarUrl" />
+                <img src="@student.AvatarUrl" title="student picture" class="bigAvatar" />
+            </label>
+        </div>
+    </div>
+</form>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private Student student;
+
+    protected override void OnInitialized()
+    {
+        List<Student> students = new List<Student>();
+        Student student1 = new Student
+            {
+                Id = 1,
+                AvatarUrl = "https://png.pngtree.com/png-clipart/20190903/original/pngtree-520-girl-avatar-png-image_4445473.jpg",
+                Name = "Marta",
+                Surname = "Peska",
+                Birthdate = "01/03/1995",
+                Studies = "Informatyka"
+            };
+
+        Student student2 = new Student
+            {
+                Id = 2,
+                AvatarUrl = "https://e7.pngegg.com/pngimages/146/939/png-clipart-avatar-boy-male-avatar-child-face.png",
+                Name = "Bob",
+                Surname = "Budowniczy",
+                Birthdate = "05/10/1998",
+                Studies = "Budownictwo"
+            };
+
+        students.Add(student1);
+        students.Add(student2);
+
+        student = students.Where(s => s.Id == Id).FirstOrDefault();
+    }
+}

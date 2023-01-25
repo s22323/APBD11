@@ -1,0 +1,118 @@
+﻿@page "/students"
+@using APBD11.Models
+@inject IJSRuntime JsRuntime
+<h3>Students</h3>
+<hr />
+<table class="table">
+    <thead>
+        <tr>
+            <th>Avatar</th>
+            <th @onclick="sortByFirstName">First name</th>
+            <th>Last name</th>
+            <th>Birthdate</th>
+            <th>Studies</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var s in students) {
+            <tr>
+                <td><img src="@s.AvatarUrl" text="student picture" class="avatar" /></td>
+                <td>@s.Name</td>
+                <td>@s.Surname</td>
+                <td>@s.Birthdate</td>
+                <td>@s.Studies</td>
+                <td>
+                    <button @onclick="() => Confirm(s.Id)" class="btn-danger btn">X</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    List<Student> students;
+    bool flag = true;
+
+    protected override void OnInitialized()
+    {
+        students = new List<Student>();
+        Student student1 = new Student
+            {
+                Id = 1,
+                AvatarUrl = "https://png.pngtree.com/png-clipart/20190903/original/pngtree-520-girl-avatar-png-image_4445473.jpg",
+                Name = "Marta",
+                Surname = "Peska",
+                Birthdate = "01/03/1995",
+                Studies = "Informatyka"
+            };
+
+        Student student2 = new Student
+            {
+                Id = 2,
+                AvatarUrl = "https://e7.pngegg.com/pngimages/146/939/png-clipart-avatar-boy-male-avatar-child-face.png",
+                Name = "Bob",
+                Surname = "Budowniczy",
+                Birthdate = "05/10/1998",
+                Studies = "Budownictwo"
+            };
+
+        students.Add(student1);
+        students.Add(student2);
+
+    }
+
+    private async Task Confirm(int id) {
+        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+        if(confirmed) {
+            removeStudent(id);
+        }
+    }
+    private void sortByFirstName()
+    {
+        if (flag)
+        {
+            students = students.OrderBy(s => s.Name).ToList();
+            flag = false;
+        } else {
+            students = students.OrderByDescending(s => s.Name).ToList();
+            flag = true;
+        }
+    }
+
+    private void sortByLastname()
+    {
+        if(flag) {
+            students = students.OrderBy(s => s.Surname).ToList();
+            flag = false;
+        } else{
+            students = students.OrderByDescending(s => s.Surname).ToList();
+            flag = true;
+        }
+
+    }
+
+    private void sortByBirthdate()
+    {
+        if(flag) {
+            students = students.OrderBy(s => s.Birthdate).ToList();
+            flag = false;
+        } else {
+            students = students.OrderByDescending(s => s.Birthdate).ToList();
+            flag = true;
+        }
+    }
+
+    private void sortByStudies()
+    {
+        if(flag) {
+            students = students.OrderBy(s => s.Studies).ToList();
+            flag = false;
+        } else{
+            students = students.OrderByDescending(s => s.Studies).ToList();
+            flag = true;
+        }
+    }
+    private void removeStudent(int id) {
+        students.RemoveAll(s => s.Id == id);
+    }
+}
